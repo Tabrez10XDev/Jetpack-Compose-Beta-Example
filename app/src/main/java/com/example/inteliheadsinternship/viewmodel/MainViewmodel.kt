@@ -8,7 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.inteliheadsinternship.api.RetrofitInstance.Companion.api
 import com.example.inteliheadsinternship.data.CartItems
 import com.example.inteliheadsinternship.data.Data
+import com.example.inteliheadsinternship.util.ExpandableCardModel
 import com.example.inteliheadsinternship.util.Resource
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -16,6 +19,12 @@ class MainViewmodel() : ViewModel() {
 
     val CartData : MutableLiveData<Resource<CartItems>> = MutableLiveData()
 
+
+    private val _cards = MutableStateFlow(listOf<ExpandableCardModel>())
+    val cards: StateFlow<List<ExpandableCardModel>> get() = _cards
+
+    private val _expandedCardIdsList = MutableStateFlow(listOf<Int>())
+    val expandedCardIdsList: StateFlow<List<Int>> get() = _expandedCardIdsList
 
 
     init {
@@ -44,4 +53,9 @@ class MainViewmodel() : ViewModel() {
 
     }
 
+    fun onCardArrowClicked(cardId: Int) {
+        _expandedCardIdsList.value = _expandedCardIdsList.value.toMutableList().also { list ->
+            if (list.contains(cardId)) list.remove(cardId) else list.add(cardId)
+        }
+    }
 }

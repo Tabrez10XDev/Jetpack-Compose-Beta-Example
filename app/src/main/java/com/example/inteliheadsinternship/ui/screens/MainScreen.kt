@@ -2,6 +2,7 @@ package com.example.inteliheadsinternship.ui.screens
 
 
 import android.icu.text.Transliterator
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import androidx.navigation.compose.rememberNavController
@@ -34,6 +36,7 @@ import com.airbnb.lottie.LottieDrawable
 import com.example.inteliheadsinternship.R
 import com.example.inteliheadsinternship.data.CartItems
 import com.example.inteliheadsinternship.data.Data
+import com.example.inteliheadsinternship.viewmodel.MainViewmodel
 import java.util.*
 
 sealed class BottomNavigationScreens(val route: String,val resourceId: Int, val icon: ImageVector) {
@@ -48,8 +51,9 @@ sealed class CartAnimations(val animId: Int){
     object Cart: CartAnimations(R.raw.box)
 }
 
+@ExperimentalAnimationApi
 @Composable
-fun MainScreen(listData : SnapshotStateList<Data>) {
+fun MainScreen(listData : SnapshotStateList<Data>, viewModel: MainViewmodel) {
 
     val navController = rememberNavController()
 
@@ -67,18 +71,20 @@ fun MainScreen(listData : SnapshotStateList<Data>) {
             TopAppBar()
         }
     ) {
-        MainScreenNavigationConfigurations(navController, listData)
+        MainScreenNavigationConfigurations(navController, listData, viewModel)
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 private fun MainScreenNavigationConfigurations(
     navController: NavHostController,
-    listData: SnapshotStateList<Data>
+    listData: SnapshotStateList<Data>,
+    viewModel: MainViewmodel
 ) {
     NavHost(navController, startDestination = BottomNavigationScreens.Home.route) {
         composable(BottomNavigationScreens.Home.route) {
-            HomeScreen(listItems = listData )
+            HomeScreen(listItems = listData, viewModel )
         }
         composable(BottomNavigationScreens.Deals.route) {
             DealsScreen()
