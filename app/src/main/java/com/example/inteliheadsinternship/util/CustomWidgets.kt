@@ -1,9 +1,12 @@
 package com.example.inteliheadsinternship.util
 
 import android.annotation.SuppressLint
+import android.inputmethodservice.Keyboard
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -24,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import com.example.inteliheadsinternship.R
 import androidx.core.content.ContextCompat
 import com.example.inteliheadsinternship.data.Data
+import com.example.inteliheadsinternship.data.SubCategory
+import com.example.inteliheadsinternship.ui.screens.subCategories
 import com.example.inteliheadsinternship.util.Constants.COLLAPSE_ANIMATION_DURATION
 import com.example.inteliheadsinternship.util.Constants.EXPAND_ANIMATION_DURATION
 import com.example.inteliheadsinternship.util.Constants.FADE_IN_ANIMATION_DURATION
@@ -103,7 +108,7 @@ fun ExpandableCard(
                 )
                 CardTitle(title = card.name)
             }
-            ExpandableContent(visible = expanded, initialVisibility = expanded)
+            ExpandableContent(visible = expanded, initialVisibility = expanded, card = card.subCategory)
         }
     }
 }
@@ -143,7 +148,8 @@ fun CardArrow(
 @Composable
 fun ExpandableContent(
     visible: Boolean = true,
-    initialVisibility: Boolean = false
+    initialVisibility: Boolean = false,
+    card : List<SubCategory>
 ) {
     val enterFadeIn = remember {
         fadeIn(
@@ -173,12 +179,15 @@ fun ExpandableContent(
         enter = enterExpand + enterFadeIn,
         exit = exitCollapse + exitFadeOut
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Row(modifier = Modifier.padding(8.dp)) {
             Spacer(modifier = Modifier.heightIn(100.dp))
-            Text(
-                text = "Expandable content here",
-                textAlign = TextAlign.Center
-            )
+            LazyRow{
+                itemsIndexed(card){_,card->
+                    subCategories(data = card)
+
+                }
+            }
+
         }
 
     }
